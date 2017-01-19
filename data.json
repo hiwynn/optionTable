@@ -1,0 +1,28 @@
+[
+	{
+		"AttributeOptionId": 118,
+		"DisplayText": "Certification",
+		"SortOrder": 0,
+		"isEditing": false
+	}, {
+		"AttributeOptionId": 119,
+		"DisplayText": "Endorsement",
+		"SortOrder": 1,
+		"isEditing": false
+	}, {
+		"AttributeOptionId": 120,
+		"DisplayText": "Licensure",
+		"SortOrder": 2,
+		"isEditing": false
+	}, {
+		"AttributeOptionId": 121,
+		"DisplayText": "Other",
+		"SortOrder": 3,
+		"isEditing": false
+	}, {
+		"AttributeOptionId": 122,
+		"DisplayText": "Registration",
+		"SortOrder": 4,
+		"isEditing": false
+	}
+]

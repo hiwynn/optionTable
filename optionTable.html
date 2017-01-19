@@ -1,0 +1,25 @@
+<div id="board">
+	<h4>{{ card.title }}</h4>
+	<table class="table table-bordered">
+		<tr>
+			<!--<td>{{ card.first }}</td>
+			<td>{{ card.second }}</td>-->
+			<td ng-repeat="item in card.config.columns">{{ item.title }}</td>
+		</tr>
+		<tbody data-as-sortable="sortConfig" ng-model="card.data">
+			<tr ng-repeat="item in card.data" data-as-sortable-item>
+				<td as-sortable-item-handle ng-repeat="column in card.columns">
+					<span ng-if="!(column.editing == 'input' && item.isEditing)">{{ item[column.name] }}</span>
+					<input class="edit" type="text" ng-model="item[column.name]" ng-if="column.editing == 'input' && item.isEditing" />
+				</td>
+				<td>
+					<input class="btn btn-warning btn-sm" type="button" value="edit" ng-click="card.edit($index)" ng-if="!item.isEditing">
+					<input class="btn btn-danger" type="button" value="delete" ng-click="card.delete($index)" ng-if="!item.isEditing">
+					<input class="btn btn-success" type="button" value="save" ng-click="card.save(item)" ng-if="item.isEditing">
+					<input class="btn btn-primary btn-default" type="button" value="cancel" ng-click="card.cancel($index)" ng-if="item.isEditing">
+				</td>
+			</tr>
+		</tbody>
+	</table>
+	<input type="button" class="btn btn-info" value="ADD OPTION" ng-click="card.add()" />
+</div>
