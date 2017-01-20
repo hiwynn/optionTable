@@ -1,5 +1,4 @@
 <html ng-app="myApp">
-
 	<head>
 		<meta charset="UTF-8">
 		<title></title>
@@ -23,182 +22,20 @@
 			}
 		</style>
 		<link rel="stylesheet" href="http://cdn.bootcss.com/bootstrap/3.3.0/css/bootstrap.min.css">
-		<script src="http://cdn.bootcss.com/jquery/1.11.1/jquery.min.js"></script>
 	    <link rel="stylesheet" type="text/css" href="dist/ng-sortable.min.css">
 	    <link rel="stylesheet" type="text/css" href="dist/ng-sortable.style.min.css">
-		<!--<script src="//cdn.bootcss.com/angular.js/1.6.1/angular.js"></script>-->
-		<script src="//cdn.bootcss.com/angular.js/1.5.8/angular.js"></script>
-		<script type="text/javascript" src="dist/ng-sortable.js"></script>
+        <script src="http://cdn.bootcss.com/jquery/1.11.1/jquery.min.js"></script>
+		<script src="//cdn.bootcss.com/angular.js/1.6.1/angular.js"></script>
+		<script src="dist/ng-sortable.js"></script>
 		<script src="http://cdn.bootcss.com/bootstrap/3.3.0/js/bootstrap.min.js"></script>
+        <!-- custom files -->
+        <script src="js/script.js"></script>
+        <script src="js/directive.js"></script>
 	</head>
-
 	<body>
 		<div ng-controller="ctrl as vm">
 			<!--<pre>{{list|json}}</pre>-->
 			<option-table config="config1"></option-table>
 		</div>
-		<script>
-            var app = angular.module('myApp', ['as.sortable']);
-            app.controller('ctrl', ctrl);
-            ctrl.$inject = ['$scope', '$http', '$compile'];
-            function ctrl($scope, $http, $compile) {
-                $scope.config1 = {
-                    title     : 'Table1',
-                    PrimaryKey: 'AttributeOptionId',
-                    dataSource: [
-                        {
-                            "AttributeOptionId": 118,
-                            "DisplayText": "Certification",
-                            "SortOrder": 0,
-                            "isEditing": false
-                        }, {
-                            "AttributeOptionId": 119,
-                            "DisplayText": "Endorsement",
-                            "SortOrder": 1,
-                            "isEditing": false
-                        }, {
-                            "AttributeOptionId": 120,
-                            "DisplayText": "Licensure",
-                            "SortOrder": 2,
-                            "isEditing": false
-                        }, {
-                            "AttributeOptionId": 121,
-                            "DisplayText": "Other",
-                            "SortOrder": 3,
-                            "isEditing": false
-                        }, {
-                            "AttributeOptionId": 122,
-                            "DisplayText": "Registration",
-                            "SortOrder": 4,
-                            "isEditing": false
-                        }
-                    ],
-                    emptyItem : {
-                        "AttributeOptionId": 0,
-                        "DisplayText"      : "",
-                        "SortOrder"        : 0,
-                        "isEditing"        : false
-                    },
-                    columns   : [
-                        {
-                            name   : 'AttributeOptionId',
-                            title  : 'Id',
-                            editing: null
-                        },
-                        {
-                            name   : 'DisplayText',
-                            title  : 'Display Text',
-                            editing: 'input'
-                        },
-                        {
-                            name : 'Action',
-                            title: 'Action'
-                        }
-                    ]
-                };
-            }
-			/*app.config(function($compileProvider) {
-			    $compileProvider.preAssignBindingsEnabled(true);
-			})*/
-			app.directive('optionTable', function() {
-
-				return {
-					restrict: 'E',
-				    scope: {
-                        config: '='
-				    },
-				    templateUrl: 'optionTable.html',
-				    replace: true,
-				    controllerAs: 'card',
-				    bindToController: true,
-				    controller: CardController
-				}
-
-				function CardController($scope){
-					let card = this;
-					card.data = [];
-
-                    angular.copy(card.config.dataSource, card.data);
-                    card.columns = [];
-                    for(var j = 0; j < card.config.columns.length - 1; j ++){
-                        card.columns.push(card.config.columns[j]);
-                    }
-
-					card.sortConfig = {
-						//containment: '#board',
-						accept: function (sourceItemHandleScope, destSortableScope) {
-							//console.log(sourceItemHandleScope);
-							return true;
-						},//override to determine drag is allowed or not. default is true.
-					    itemMoved: function (event) {
-					    	//Do what you want,
-					    	console.log('itemMoved');
-					    	console.dir(event);
-					    },
-					    orderChanged: function(event) {
-					    	card.data.forEach(function(item,index){
-					    		item.SortOrder = index;
-					    	})
-					    	//console.dir(event.dest.index);
-
-					    }
-					}
-					// add confirm
-					card.delete = function(i) {
-						if(confirm("Are you sure to delete?")){
-							card.data.splice(i, 1);
-						}
-					}
-
-					card.edit = function($index) {
-						let item = getItemById($index);
-						// 点edit时把当时的老数据保存到临时变量temp中
-						let temp = {};
-						angular.copy(item, temp);
-						// 记录点击前的信息，当取消操作时恢复信息
-						item._origin = temp;
-						item.isEditing = true;
-						card.data[$index] = item;
-					}
-
-					card.cancel = function($index) {
-						let item = getItemById($index);
-						console.log(this);
-						// 先取消编辑状态
-						item.isEditing = false;
-						// 如果存在旧数据则恢复
-						let origin = item._origin;
-						if(origin) {
-							angular.copy(origin, item);
-						}else{
-							card.data.pop();
-						}
-
-					}
-
-					card.save = function(item) {
-						item.isEditing = false;
-					}
-
-					card.add = function() {
-						var attributeOptionId = card.data[card.data.length - 1].AttributeOptionId + 1;
-						card.data.push({
-							first: attributeOptionId,
-							second: "",
-							"SortOrder": card.data.length + 1,
-							"isEditing": true
-						})
-					}
-
-					function getItemById(index) {
-						return card.data[index];
-					}
-				}
-
-
-			})
-		</script>
-
 	</body>
-
 </html>
